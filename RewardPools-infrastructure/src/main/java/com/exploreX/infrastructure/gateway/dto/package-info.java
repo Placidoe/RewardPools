@@ -1,0 +1,1 @@
+package com.exploreX.infrastructure.gateway.dto;
