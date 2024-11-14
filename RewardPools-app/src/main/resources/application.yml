@@ -3,3 +3,14 @@ spring:
     name: RewardPools-app
   profiles:
     active: dev
+
+server:
+  port: 8088
+
+#sa-token:
+#  token-name: satoken
+#  timeout: 2592000 # token有效期，默认30天，单位：秒
+#  is-concurrent: true # 是否开启多设备登录
+#  is-share: false # 是否开启多系统间共享 token
+#  is-read-cookie: true # 是否读取cookie
+#  is-read-header: true # 是否读取header

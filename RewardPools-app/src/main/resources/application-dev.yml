@@ -29,6 +29,11 @@ spring:
     connection-timeout: 30000 #数据库连接超时时间,默认30秒，即30000
     connection-test-query: SELECT 1
   type: com.zaxxer.hikari.HikariDataSource
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
+      username: elastic
+      password: changeme
 
 # MyBatis 配置【如需使用记得打开】
 #mybatis:
@@ -40,3 +45,27 @@ logging:
   level:
     root: info
   config: classpath:logback-spring.xml
+
+
+# xxl-job
+xxl:
+  job:
+    admin:
+      addresses: http://127.0.0.1:8080/xxl-job-admin
+    executor:
+      appname: my-executor
+      ip:
+      port: 9999
+      accessToken: 123456
+      logpath: /data/applogs/xxl-job/
+      logretentiondays: 30
+
+# zookeeper
+zookeeper:
+  sdk:
+    config:
+      connect-string: 192.168.253.144:2181
+      base-sleep-time-ms: 1000
+      max-retries: 3
+      session-timeout-ms: 18000
+      connection-timeout-ms: 30000
