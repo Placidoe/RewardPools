@@ -7,14 +7,18 @@ import com.exploreX.infrastructure.persistent.dao.UpAndDownActiveDAO;
 import com.exploreX.infrastructure.persistent.dao.YearInfoDAO;
 import com.exploreX.infrastructure.persistent.po.Festival;
 import com.exploreX.infrastructure.persistent.po.YearInfo;
+import com.exploreX.types.common.KafkaActiveConstants;
 import com.exploreX.types.utils.RedisService;
+import com.exploreX.types.utils.ZookeeperService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +42,8 @@ public class UpAndDownActiveRepository implements IUpAndDownActiveRepository {
     UpAndDownActiveDAO upAndDownActiveDAO;
     @Resource
     KafkaTemplate kafkaTemplate;
-
+    @Autowired
+    private ZookeeperService zookeeperService;
 
 
     @Override
@@ -62,10 +67,18 @@ public class UpAndDownActiveRepository implements IUpAndDownActiveRepository {
             String[] activeIds = festival.getActiveIds();
             for (String activeId : activeIds) {
                 //TODO
-                kafkaTemplate.send("active_warm_up_topic",activeId);
+                kafkaTemplate.send(KafkaActiveConstants.SKU,activeId);
+                kafkaTemplate.send(KafkaActiveConstants.STRATEGY,activeId);
+                kafkaTemplate.send(KafkaActiveConstants.topic,activeId);
+                kafkaTemplate.send(KafkaActiveConstants.TOKEN,activeId);
 
-                //开启zookeeper节点记录对应活动id的限流
-
+                //开启zookeeper节点记录对应活动id的限流，有节点就说明有被限流，开启了限流之后，在aop处做限流aop
+                try {
+                    zookeeperService.createNode("active_limit"+activeId, activeId.getBytes());
+                } catch (Exception e) {
+                    log.error("开启活动限流出现了问题哦...",e);
+                    throw new RuntimeException(e);
+                }
             }
         }
 

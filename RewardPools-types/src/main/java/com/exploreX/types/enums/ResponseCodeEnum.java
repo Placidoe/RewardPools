@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public enum ResponseCode {
+public enum ResponseCodeEnum {
 
     SUCCESS("0000", "成功"),
     UN_ERROR("0001", "未知失败"),

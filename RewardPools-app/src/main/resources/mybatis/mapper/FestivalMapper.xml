@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exploreX.infrastructure.persistent.dao.FestivalDAO">
+
+    <resultMap id="BaseResultMap" type="com.exploreX.infrastructure.persistent.po.Festival">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="festivalId" column="festival_id" jdbcType="VARCHAR"/>
+            <result property="festivalDescrip" column="festival_descrip" jdbcType="VARCHAR"/>
+            <result property="dayStartOfYearId" column="day_start_of_year_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,festival_id,festival_descrip,
+        day_start_of_year_id,create_time,update_time
+    </sql>
+    <select id="selectBatchByFestivalIds" resultType="com.exploreX.infrastructure.persistent.po.Festival">
+        select * 
+        from RewardPool.festival 
+        where festival_id
+        in
+        <foreach item="item" index="index" collection="festivalIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

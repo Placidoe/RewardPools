@@ -1,4 +1,4 @@
-package com.exploreX.domain.reward.service;
+package com.exploreX.domain.reward.raflle.service;
 
 import com.exploreX.types.model.pojo.Result;
 
