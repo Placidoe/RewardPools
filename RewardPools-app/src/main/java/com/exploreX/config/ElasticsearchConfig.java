@@ -16,7 +16,7 @@ public class ElasticsearchConfig {
     public RestHighLevelClient client() {
         return RestClients.create(
             ClientConfiguration.builder()
-                .connectedTo("localhost:9200")
+                .connectedTo("192.168.253.144:9200")
                 .withBasicAuth("elastic", "changeme")
                 .build()
         ).rest();
