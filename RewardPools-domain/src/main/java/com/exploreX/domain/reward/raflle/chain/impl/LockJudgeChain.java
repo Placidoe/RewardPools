@@ -3,6 +3,7 @@ package com.exploreX.domain.reward.raflle.chain.impl;
 import com.exploreX.domain.reward.raflle.chain.TemplateChain;
 import com.exploreX.domain.reward.raflle.chain.model.ChainInput;
 import com.exploreX.domain.reward.raflle.chain.model.ChainOutput;
+import org.springframework.stereotype.Service;
 
 /**
  * TODO
@@ -11,6 +12,7 @@ import com.exploreX.domain.reward.raflle.chain.model.ChainOutput;
  * @Author Lx
  * @Date 2024/11/17 上午2:17
  **/
+@Service("LockJudgeChain")
 public class LockJudgeChain implements TemplateChain {
     TemplateChain curChain;
     TemplateChain nextChain;

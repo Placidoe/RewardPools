@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * @Author Lx
  * @Date 2024/11/17 上午2:16
  **/
-@Service("storageCountJudge")
+@Service("BlackJudgeChain")
 public class BlackJudgeChain implements TemplateChain {
     TemplateChain curChain;
     TemplateChain nextChain;
