@@ -1,5 +1,7 @@
 package com.exploreX.trigger.apis.hotPool.service;
 
+import org.redisson.misc.Hash;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +62,8 @@ class MyObserver implements Observer {
         //todo 下发调用处理接口
 
         //todo 统计数据
-
+        Map<String,Object> map = node.getInnerMap();
+        Object totalPrice = map.get("prices");
         //todo 更新数据库节点表的节点状态
 
         //todo hashmap更新节点状态
