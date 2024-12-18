@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -87,6 +88,7 @@ public class UpAndDownActiveRepository implements IUpAndDownActiveRepository {
     }
 
     @Override
+    @Async
     public void asyncCopyTableData(String tableName) {
         upAndDownActiveDAO.createShadowTable("up_and_down_active");
     }

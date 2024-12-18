@@ -3,14 +3,17 @@ package com.exploreX.trigger.job;
 import com.exploreX.domain.active.upAndDownActive.repository.IUpAndDownActiveRepository;
 import com.exploreX.trigger.apis.active.DCCValueActiveStatusController;
 import com.exploreX.types.common.ActiveConstant;
+import com.exploreX.types.common.NacosConfigConstant;
 import com.exploreX.types.utils.RedisService;
 import com.exploreX.types.utils.ZookeeperService;
+import com.exploreX.types.utils.nacos.NacosService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -26,6 +29,9 @@ public class ActiveUpXxlJob {
     private static Logger logger = LoggerFactory.getLogger(ActiveUpXxlJob.class);
 
     @Resource
+    NacosService nacosService;
+
+    @Resource
     private ZookeeperService zookeeperService;
 
     @Autowired
@@ -37,11 +43,15 @@ public class ActiveUpXxlJob {
     @Resource
     IUpAndDownActiveRepository iUpAndDownActiveRepository;
 
+    @Resource
+    private KafkaTemplate kafkaTemplate;
+
 
 
     //定时任务，每天00:00执行一次，将活动id存到缓存中去[预热]
     @XxlJob("ActiveUpJobHandler")
     public ReturnT<String> demoJobHandler(HashMap<String,String> param) throws Exception {
+        String tableName = "tableName";
         logger.info("ActiveUpJobHandler start, param:{}", param.toString());
 
         String key = param.get("key");
@@ -55,13 +65,12 @@ public class ActiveUpXxlJob {
 
         //todo 2.根据活动ids开始预热数据
         iUpAndDownActiveRepository.WarmUpFestivalByIds(festivalIds);
-
-        //todo 3.开启异步线程去对数据库进行拷贝，创建影子表
-        iUpAndDownActiveRepository.asyncCopyTableData("tableName");
-        //todo 4.使用nacos-api进行数据源的动态切换
-
+        //todo 3.开启异步线程去对数据库进行拷贝，创建影子表NacosService
+        iUpAndDownActiveRepository.asyncCopyTableData(tableName);
+        //todo 4.使用nacos-api进行数据源的动态切换。dataId-服务配置id，groupId-服务分组id
+        nacosService.getConfigFromNacos("dataId","groupId",5000);
+        nacosService.publishConfigToNacos("dataId","groupId", NacosConfigConstant.NACOS_ACTIVE_TEMPLATE,false);
         //todo 5.开启延迟队列，红包雨倒计时
-
 
         //2.从zookeeper中拿到活动_时间戳和活动id的
         String Key = ActiveConstant.ACTIVE_UP_KEY + daysSinceStartOfYear;
